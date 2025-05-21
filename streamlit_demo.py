@@ -1,0 +1,35 @@
+import os
+from openai import OpenAI
+import streamlit as st
+
+client = OpenAI(
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+)
+
+st.title('测试')
+
+st.divider()
+st.write("你好")
+
+prompt = st.chat_input("请输入")
+
+if "messages" not in st.session_state:
+    st.session_state["messages"] = []
+
+if prompt:
+    st.session_state["messages"].append({"role": "user", "content": prompt})
+    for message in st.session_state["messages"]:
+        st.chat_message(message["role"]).markdown(message["content"])
+
+    with st.spinner("思考中"):
+        completion = client.chat.completions.create(
+            model="qwen-plus",
+            messages=[
+                {"role": "system", "content": "你是一个乐于助人的人工智能助手"},
+                {"role": "user", "content": prompt},
+            ],
+        )
+        response = completion.choices[0].message.content
+        st.session_state["messages"].append({"role": "assistant", "content": response})
+        st.chat_message("assistant").markdown(response)
