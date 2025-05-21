@@ -7,12 +7,12 @@ client = OpenAI(
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
 )
 
-st.title('测试')
+st.title('小白只能助手')
 
 st.divider()
 st.write("你好")
 
-prompt = st.chat_input("请输入")
+prompt = st.chat_input("给小白发送消息")
 
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
@@ -22,11 +22,11 @@ if prompt:
     for message in st.session_state["messages"]:
         st.chat_message(message["role"]).markdown(message["content"])
 
-    with st.spinner("思考中"):
+    with st.spinner("思考中..."):
         completion = client.chat.completions.create(
             model="qwen-plus",
             messages=[
-                {"role": "system", "content": "你是一个乐于助人的人工智能助手"},
+                {"role": "system", "content": "你是一个乐于助人的人工智能助手，你的名字叫小白"},
                 {"role": "user", "content": prompt},
             ],
         )
